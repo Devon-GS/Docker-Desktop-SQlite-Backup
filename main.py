@@ -19,7 +19,7 @@ DATABASES = [
     {
         "name": "waste-management-online-form",
         "container": "waste-management",
-        "remote_path": "/data/waste_form.db",
+        "remote_path": "/data/waste_forms.db",
     },
     {
         "name": "weekly-stock-takes-web",
@@ -129,13 +129,21 @@ def backup_database(db_config: dict) -> None:
 
 
 def main():
-    logger.info("Starting SQLite backup run.")
+    total = len(DATABASES)
+    start_time = datetime.now()
 
-    for db_config in DATABASES:
+    logger.info("=== BACKUP RUN STARTED | %d database(s) queued ===", total)
+
+    for idx, db_config in enumerate(DATABASES, start=1):
+        logger.info("--- [%d/%d] Database: '%s' ---", idx, total, db_config["name"])
         backup_database(db_config)
 
-    logger.info("All database backups completed.")
-
+    duration = (datetime.now() - start_time).total_seconds()
+    logger.info(
+        "=== BACKUP RUN COMPLETED | Processed %d database(s) in %.2fs ===",
+        total,
+        duration,
+    )
 
 if __name__ == "__main__":
     main()
