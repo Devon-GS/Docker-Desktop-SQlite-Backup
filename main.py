@@ -59,10 +59,10 @@ def setup_logger() -> logging.Logger:
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
 
-    # Output to console as well
-    console_handler = logging.StreamHandler()
-    console_handler.setFormatter(formatter)
-    logger.addHandler(console_handler)
+    # # Output to console as well
+    # console_handler = logging.StreamHandler()
+    # console_handler.setFormatter(formatter)
+    # logger.addHandler(console_handler)
 
     return logger
 
@@ -71,8 +71,20 @@ logger = setup_logger()
 
 
 def run_command(cmd: list[str]) -> None:
-    """Helper to run shell commands and raise an error if they fail."""
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    """Helper to run shell commands without flashing console windows on Windows."""
+    extra_kwargs = {}
+    
+    # Hide flashing console window on Windows
+    if os.name == "nt":
+        extra_kwargs["creationflags"] = subprocess.CREATE_NO_WINDOW
+
+    result = subprocess.run(
+        cmd,
+        capture_output=True,
+        text=True,
+        **extra_kwargs
+    )
+    
     if result.returncode != 0:
         raise RuntimeError(
             f"Command failed: {' '.join(cmd)}\nError: {result.stderr.strip()}"
