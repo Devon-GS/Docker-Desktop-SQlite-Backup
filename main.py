@@ -1,3 +1,4 @@
+import os
 import logging
 from logging.handlers import RotatingFileHandler
 from datetime import datetime
@@ -29,7 +30,7 @@ DATABASES = [
 ]
 
 BACKUP_ROOT_DIR = Path("./docker_sqlite_backups")  # Where backups are saved
-MAX_COPIES = 3  # How many backups to keep per database
+MAX_COPIES = 12  # How many backups to keep per database
 
 # Logging settings
 LOG_FILE = BACKUP_ROOT_DIR / "backup.log"
